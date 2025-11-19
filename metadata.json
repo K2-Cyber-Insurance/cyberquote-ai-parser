@@ -1,0 +1,5 @@
+{
+  "name": "CyberQuote AI Parser",
+  "description": "A tool to upload cyber insurance PDF applications and extract key quoting data using Gemini.",
+  "requestFramePermissions": []
+}

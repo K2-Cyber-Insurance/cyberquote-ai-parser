@@ -1,0 +1,47 @@
+From: broker@example.com
+To: quotes@k2cyber.co
+Subject: Cyber Insurance Quote Request - Test Company
+Date: Mon, 1 Jan 2024 12:00:00 -0500
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_12345"
+
+------=_Part_12345
+Content-Type: text/plain; charset=utf-8
+
+Hello,
+
+I am submitting a quote request for Test Company Inc.
+
+Company Details:
+- Name: Test Company Inc
+- Tax ID: 12-3456789
+- Address: 123 Main St, New York, NY 10001
+- Year Founded: 2010
+- Revenue: $5,000,000
+- NAICS Code: 541511
+
+Policy Request:
+- Aggregate Limit: $1,000,000
+- Retention: $5,000
+- Effective Date: 2024-08-01
+
+Contact Information:
+- Contact: John Doe
+- Email: john.doe@testcompany.com
+- Phone: 555-123-4567
+- Preferred Method: Email
+
+Please find the application PDF attached.
+
+Best regards,
+Broker Name
+broker@example.com
+
+------=_Part_12345
+Content-Type: application/pdf; name="application.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="application.pdf"
+
+JVBERi0xLjQKJdPr6eEKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPD4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL01lZGlhQm94IFswIDAgNjEyIDc5Ml0KL1BhcmVudCAyIDAgUgovUmVzb3VyY2VzIDw8Ci9Gb250IDw8Ci9GMSA0IDAgUgo+Pgo+PgovQ29udGVudHMgNSAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL0ZvbnQKL1N1YnR5cGUgL1R5cGUxCi9CYXNlRm9udCAvSGVsdmV0aWNhCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9MZW5ndGggNDQKPj4Kc3RyZWFtCkJUCi9GMSAxMiBUZgooVGVzdCBQREYgQXBwbGljYXRpb24pIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTggMDAwMDAgbiAKMDAwMDAwMDEyMyAwMDAwMCBuIAowMDAwMDAwMjA3IDAwMDAwIG4gCjAwMDAwMDAzNzEgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA2Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgo0ODMKJSVFT0Y=
+
+------=_Part_12345--
