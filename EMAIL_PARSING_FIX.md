@@ -76,3 +76,4 @@ Test with your actual email file:
 - Should enable the "Analyze Documents" button
 - Should show email metadata in the UI
 
+

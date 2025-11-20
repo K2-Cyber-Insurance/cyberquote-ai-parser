@@ -4,10 +4,25 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    const isTest = (env.K2_CYBER_ENV || 'prod').toLowerCase() === 'test';
+    const apiBaseUrl = isTest ? 'https://api-test.k2cyber.co' : 'https://api.k2cyber.co';
+    
     return {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          '/api/k2cyber': {
+            target: apiBaseUrl,
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api\/k2cyber/, ''),
+            configure: (proxy, _options) => {
+              proxy.on('error', (err, _req, _res) => {
+                console.log('proxy error', err);
+              });
+            },
+          },
+        },
       },
       plugins: [react()],
       define: {
@@ -17,7 +32,8 @@ export default defineConfig(({ mode }) => {
         'process.env.K2_CYBER_CLIENT_ID_TEST': JSON.stringify(env.K2_CYBER_CLIENT_ID_TEST),
         'process.env.K2_CYBER_CLIENT_SECRET_TEST': JSON.stringify(env.K2_CYBER_CLIENT_SECRET_TEST),
         'process.env.K2_CYBER_CLIENT_ID_PROD': JSON.stringify(env.K2_CYBER_CLIENT_ID_PROD),
-        'process.env.K2_CYBER_CLIENT_SECRET_PROD': JSON.stringify(env.K2_CYBER_CLIENT_SECRET_PROD)
+        'process.env.K2_CYBER_CLIENT_SECRET_PROD': JSON.stringify(env.K2_CYBER_CLIENT_SECRET_PROD),
+        'process.env.K2_CYBER_SCOPE': JSON.stringify(env.K2_CYBER_SCOPE || '')
       },
       resolve: {
         alias: {

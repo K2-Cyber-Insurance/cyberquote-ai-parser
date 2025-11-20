@@ -155,6 +155,201 @@ const SmartInput: React.FC<{
   );
 };
 
+// Coverage Details Dropdown Component
+const CoverageDetailsSection: React.FC<{ coverageDetails: PostSubmitPositiveResponse['data']['coverage_details'] }> = ({ coverageDetails }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const formatValue = (value: string | number | null | undefined): string => {
+    if (value === null || value === undefined) return 'N/A';
+    return String(value);
+  };
+
+  return (
+    <div className="bg-k2-black/50 rounded-lg border border-k2-blue overflow-hidden">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-k2-blue/10 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <svg className="w-5 h-5 text-k2-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span className="text-sm font-semibold text-white" style={{ fontWeight: 600 }}>Coverage Details</span>
+        </div>
+        <svg
+          className={`w-5 h-5 text-k2-grey transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      {isExpanded && (
+        <div className="px-4 py-4 border-t border-k2-blue/30 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {coverageDetails.info_privacy_network_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Info Privacy Network Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.info_privacy_network_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.regulatory_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Regulatory Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.regulatory_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.pci_dss_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">PCI DSS Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.pci_dss_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.business_interruption_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Business Interruption Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.business_interruption_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.vendor_bi_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Vendor BI Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.vendor_bi_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.cyber_extortion_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Cyber Extortion Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.cyber_extortion_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.funds_transfer_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Funds Transfer Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.funds_transfer_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.fraudulent_instruction_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Fraudulent Instruction Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.fraudulent_instruction_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.invoice_manipulation_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Invoice Manipulation Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.invoice_manipulation_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.media_liability_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Media Liability Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.media_liability_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.system_failure_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">System Failure Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.system_failure_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.vendor_system_failure_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Vendor System Failure Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.vendor_system_failure_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.incident_response_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Incident Response Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.incident_response_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.data_recovery_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Data Recovery Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.data_recovery_limit)}</div>
+              </div>
+            )}
+            {coverageDetails.utility_fraud_limit && (
+              <div>
+                <div className="text-xs text-k2-grey/70 mb-1">Utility Fraud Limit</div>
+                <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.utility_fraud_limit)}</div>
+              </div>
+            )}
+          </div>
+          
+          {/* Period Fields */}
+          {(coverageDetails.business_interruption_restoration_period !== undefined ||
+            coverageDetails.business_interruption_waiting_period !== undefined ||
+            coverageDetails.vendor_bi_restoration_period !== undefined ||
+            coverageDetails.vendor_bi_waiting_period !== undefined ||
+            coverageDetails.vendor_system_failure_restoration_period !== undefined ||
+            coverageDetails.vendor_system_failure_waiting_period !== undefined ||
+            coverageDetails.system_failure_restoration_period !== undefined ||
+            coverageDetails.system_failure_waiting_period !== undefined) && (
+            <div className="mt-4 pt-4 border-t border-k2-blue/30">
+              <div className="text-xs font-semibold text-k2-grey uppercase tracking-wider mb-3" style={{ fontWeight: 600 }}>Periods</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {coverageDetails.business_interruption_restoration_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">BI Restoration Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.business_interruption_restoration_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.business_interruption_waiting_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">BI Waiting Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.business_interruption_waiting_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.vendor_bi_restoration_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">Vendor BI Restoration Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.vendor_bi_restoration_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.vendor_bi_waiting_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">Vendor BI Waiting Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.vendor_bi_waiting_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.vendor_system_failure_restoration_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">Vendor SF Restoration Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.vendor_system_failure_restoration_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.vendor_system_failure_waiting_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">Vendor SF Waiting Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.vendor_system_failure_waiting_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.system_failure_restoration_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">System Failure Restoration Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.system_failure_restoration_period)}</div>
+                  </div>
+                )}
+                {coverageDetails.system_failure_waiting_period !== undefined && (
+                  <div>
+                    <div className="text-xs text-k2-grey/70 mb-1">System Failure Waiting Period</div>
+                    <div className="text-white font-semibold text-sm" style={{ fontWeight: 600 }}>{formatValue(coverageDetails.system_failure_waiting_period)}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Section: React.FC<{ title: string; children: React.ReactNode; icon?: React.ReactNode; completeness: number }> = ({ title, children, icon, completeness }) => (
   <div className="bg-k2-black rounded-xl shadow-lg border border-k2-blue overflow-hidden mb-8">
     <div className="px-6 py-5 border-b border-k2-blue bg-k2-black flex items-center justify-between">
@@ -386,6 +581,45 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data: initialData }) => {
                 <div className="text-k2-green font-semibold capitalize" style={{ fontWeight: 600 }}>{submitResult.data.quote_status}</div>
               </div>
             </div>
+            
+            {/* Policy Term Fields */}
+            {submitResult.data.policy_term && (
+              <div className="bg-k2-black/50 rounded-lg p-4 border border-k2-blue">
+                <div className="text-xs font-semibold text-k2-grey uppercase tracking-wider mb-3" style={{ fontWeight: 600 }}>Policy Terms</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {submitResult.data.policy_term.premium_only && (
+                    <div>
+                      <div className="text-xs text-k2-grey/70 mb-1">Premium Only</div>
+                      <div className="text-white font-semibold" style={{ fontWeight: 600 }}>{submitResult.data.policy_term.premium_only}</div>
+                    </div>
+                  )}
+                  {submitResult.data.policy_term.agg_limit && (
+                    <div>
+                      <div className="text-xs text-k2-grey/70 mb-1">Aggregate Limit</div>
+                      <div className="text-white font-semibold" style={{ fontWeight: 600 }}>{submitResult.data.policy_term.agg_limit}</div>
+                    </div>
+                  )}
+                  {submitResult.data.policy_term.retention && (
+                    <div>
+                      <div className="text-xs text-k2-grey/70 mb-1">Retention</div>
+                      <div className="text-white font-semibold" style={{ fontWeight: 600 }}>{submitResult.data.policy_term.retention}</div>
+                    </div>
+                  )}
+                  {submitResult.data.policy_term.effective_date && (
+                    <div>
+                      <div className="text-xs text-k2-grey/70 mb-1">Effective Date</div>
+                      <div className="text-white font-semibold" style={{ fontWeight: 600 }}>{submitResult.data.policy_term.effective_date}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Coverage Details Dropdown */}
+            {submitResult.data.coverage_details && (
+              <CoverageDetailsSection coverageDetails={submitResult.data.coverage_details} />
+            )}
+
             {submitResult.data.checkout_link && (
               <div className="bg-k2-green/10 rounded-lg p-4 border border-k2-green">
                 <a

@@ -7,9 +7,13 @@ function getApiConfig() {
   const env = (process.env.K2_CYBER_ENV || 'prod').toLowerCase();
   const isTest = env === 'test';
   
-  const baseUrl = isTest 
-    ? 'https://api-test.k2cyber.co'
-    : 'https://api.k2cyber.co';
+  // Use proxy in development to avoid CORS issues
+  const isDevelopment = import.meta.env.DEV;
+  const baseUrl = isDevelopment
+    ? '/api/k2cyber'  // Use Vite proxy in development
+    : (isTest 
+        ? 'https://api-test.k2cyber.co'
+        : 'https://api.k2cyber.co');
   
   const tokenUrl = `${baseUrl}/auth/token`;
   const apiBaseUrl = `${baseUrl}/quote/firstcyber`;
@@ -71,22 +75,42 @@ async function getAccessToken(): Promise<string> {
   }
 
   try {
+    const params = new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: config.clientId,
+      client_secret: config.clientSecret,
+    });
+    
+    // Only include scope if explicitly configured
+    // If your client credentials don't have the 'quote' scope, leave K2_CYBER_SCOPE empty
+    const scope = process.env.K2_CYBER_SCOPE;
+    if (scope && scope.trim() !== '') {
+      params.append('scope', scope.trim());
+    }
+    
     const response = await fetch(config.tokenUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        grant_type: 'client_credentials',
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        scope: 'quote',
-      }),
+      body: params,
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to obtain access token: ${response.status} ${errorText}`);
+      let errorMessage = `Failed to obtain access token: ${response.status} ${errorText}`;
+      
+      // Provide helpful guidance for scope errors
+      if (errorText.includes('invalid_scope') || errorText.includes('scopes not found')) {
+        errorMessage += '\n\n' +
+          'This error indicates your client credentials do not have the requested scope configured on the API server. ' +
+          'Options:\n' +
+          '1. Contact your API administrator to enable the scope for your client credentials\n' +
+          '2. If no scope is required, leave K2_CYBER_SCOPE empty in your .env.local file\n' +
+          '3. If a different scope is needed, set K2_CYBER_SCOPE to that value in .env.local';
+      }
+      
+      throw new Error(errorMessage);
     }
 
     const tokenData: TokenResponse = await response.json();
@@ -105,11 +129,72 @@ async function getAccessToken(): Promise<string> {
 }
 
 /**
- * Transforms QuoteRequestData to match the API schema (removes parsing_notes)
+ * Ensures a string value is not null (converts to empty string)
+ */
+function ensureString(value: string | null | undefined): string {
+  return value ?? '';
+}
+
+/**
+ * Ensures a URL has a protocol (adds https:// if missing)
+ */
+function ensureValidUrl(url: string | null | undefined): string {
+  if (!url || url.trim() === '') {
+    return '';
+  }
+  const trimmed = url.trim();
+  // If it already has a protocol, return as is
+  if (trimmed.match(/^https?:\/\//i)) {
+    return trimmed;
+  }
+  // Otherwise add https://
+  return `https://${trimmed}`;
+}
+
+/**
+ * Transforms QuoteRequestData to match the API schema
+ * - Removes parsing_notes
+ * - Converts null string values to empty strings
+ * - Ensures website.domainName is a valid URL format (omits if empty or has_website is false)
  */
 function transformPayload(data: QuoteRequestData): Omit<QuoteRequestData, 'parsing_notes'> {
-  const { parsing_notes, ...payload } = data;
-  return payload;
+  const { parsing_notes, ...rest } = data;
+  
+  const hasWebsite = rest.website?.has_website ?? false;
+  const domainName = rest.website?.domainName;
+  const validDomainName = domainName && domainName.trim() !== '' 
+    ? ensureValidUrl(domainName) 
+    : '';
+  
+  // Build website object - only include domainName if has_website is true and domainName is not empty
+  const website: { has_website: boolean; domainName?: string } = {
+    has_website: hasWebsite,
+  };
+  if (hasWebsite && validDomainName) {
+    website.domainName = validDomainName;
+  }
+  
+  return {
+    ...rest,
+    broker_email: ensureString(rest.broker_email),
+    insured_name: ensureString(rest.insured_name),
+    insured_taxid: ensureString(rest.insured_taxid),
+    insured_location: {
+      address_line1: ensureString(rest.insured_location?.address_line1),
+      address_line2: ensureString(rest.insured_location?.address_line2),
+      address_city: ensureString(rest.insured_location?.address_city),
+      address_state: ensureString(rest.insured_location?.address_state),
+      address_zip: ensureString(rest.insured_location?.address_zip),
+    },
+    website,
+    insured_contact: {
+      first_name: ensureString(rest.insured_contact?.first_name),
+      last_name: ensureString(rest.insured_contact?.last_name),
+      email: ensureString(rest.insured_contact?.email),
+      phone: ensureString(rest.insured_contact?.phone),
+      preferred_method: ensureString(rest.insured_contact?.preferred_method),
+    },
+  };
 }
 
 /**

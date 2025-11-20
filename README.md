@@ -22,5 +22,6 @@ View your app in AI Studio: https://ai.studio/apps/drive/1qv0wCjGCrfYasmwsnm_QZb
    - `K2_CYBER_CLIENT_SECRET_TEST` - Your K2 Cyber API test client secret
    - `K2_CYBER_CLIENT_ID_PROD` - Your K2 Cyber API production client ID
    - `K2_CYBER_CLIENT_SECRET_PROD` - Your K2 Cyber API production client secret
+   - `K2_CYBER_SCOPE` - (Optional) OAuth scope to request. Leave empty if your credentials don't require a scope, or set to the scope name if required (e.g., `quote`)
 3. Run the app:
    `npm run dev`
