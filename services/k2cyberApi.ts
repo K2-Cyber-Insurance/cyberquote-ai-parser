@@ -162,17 +162,15 @@ function transformPayload(data: QuoteRequestData): Omit<QuoteRequestData, 'parsi
   
   const hasWebsite = rest.website?.has_website ?? false;
   const domainName = rest.website?.domainName;
-  const validDomainName = domainName && domainName.trim() !== '' 
-    ? ensureValidUrl(domainName) 
+  // Always include domainName (empty string if not provided or has_website is false)
+  const validDomainName = (hasWebsite && domainName && domainName.trim() !== '')
+    ? ensureValidUrl(domainName)
     : '';
   
-  // Build website object - only include domainName if has_website is true and domainName is not empty
-  const website: { has_website: boolean; domainName?: string } = {
+  const website = {
     has_website: hasWebsite,
+    domainName: validDomainName,
   };
-  if (hasWebsite && validDomainName) {
-    website.domainName = validDomainName;
-  }
   
   return {
     ...rest,

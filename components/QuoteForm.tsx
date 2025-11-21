@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { QuoteRequestData, PostSubmitPositiveResponse, PostSubmitNegativeResponse } from '../types';
 import { submitQuote } from '../services/k2cyberApi';
+import { SmartSelect } from './SmartSelect';
+import { AGG_LIMIT_OPTIONS, RETENTION_OPTIONS, normalizeAggLimit, normalizeRetention, formatCurrency } from '../services/fieldValidation';
 
 interface QuoteFormProps {
   data: QuoteRequestData;
@@ -46,7 +48,7 @@ const sanitizeData = (data: Partial<QuoteRequestData>): QuoteRequestData => {
       last_name: null,
       email: null,
       phone: null,
-      preferred_method: null
+      preferred_method: 'Email' // Default to Email
     },
     parsing_notes: data.parsing_notes ?? []
   };
@@ -783,8 +785,60 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data: initialData }) => {
       >
         <SmartInput label="Revenue" type="number" value={formData.revenue} onChange={(v) => updateField(['revenue'], v)} isModified={isFieldModified(['revenue'])} useCommas={true} />
         <SmartInput label="Effective Date" type="date" value={formData.effective_date} onChange={(v) => updateField(['effective_date'], v)} isModified={isFieldModified(['effective_date'])} />
-        <SmartInput label="Agg Limit Requested" type="number" value={formData.agg_limit} onChange={(v) => updateField(['agg_limit'], v)} isModified={isFieldModified(['agg_limit'])} placeholder="e.g. 1000000" useCommas={true} />
-        <SmartInput label="Retention Requested" type="number" value={formData.retention} onChange={(v) => updateField(['retention'], v)} isModified={isFieldModified(['retention'])} placeholder="e.g. 5000" useCommas={true} />
+        {isMissing(formData.agg_limit) ? (
+          <SmartSelect
+            label="Agg Limit Requested"
+            value={formData.agg_limit}
+            onChange={(v) => updateField(['agg_limit'], v)}
+            options={AGG_LIMIT_OPTIONS.map(val => ({ value: val, label: formatCurrency(val) }))}
+            isModified={isFieldModified(['agg_limit'])}
+            placeholder="Select aggregate limit..."
+          />
+        ) : (
+          <SmartInput 
+            label="Agg Limit Requested" 
+            type="number" 
+            value={formData.agg_limit} 
+            onChange={(v) => {
+              const notes: string[] = [];
+              const normalized = normalizeAggLimit(v, notes);
+              updateField(['agg_limit'], normalized.value);
+              // Add notes to parsing_notes if value was adjusted
+              if (notes.length > 0) {
+                setFormData(prev => ({
+                  ...prev,
+                  parsing_notes: [...(prev.parsing_notes || []), ...notes]
+                }));
+              }
+            }} 
+            isModified={isFieldModified(['agg_limit'])} 
+            placeholder="e.g. 1000000" 
+            useCommas={true} 
+          />
+        )}
+        {isMissing(formData.retention) ? (
+          <SmartSelect
+            label="Retention Requested"
+            value={formData.retention}
+            onChange={(v) => updateField(['retention'], v)}
+            options={RETENTION_OPTIONS.map(val => ({ value: val, label: formatCurrency(val) }))}
+            isModified={isFieldModified(['retention'])}
+            placeholder="Select retention..."
+          />
+        ) : (
+          <SmartInput 
+            label="Retention Requested" 
+            type="number" 
+            value={formData.retention} 
+            onChange={(v) => {
+              const normalized = normalizeRetention(v);
+              updateField(['retention'], normalized);
+            }} 
+            isModified={isFieldModified(['retention'])} 
+            placeholder="e.g. 5000" 
+            useCommas={true} 
+          />
+        )}
       </Section>
 
       {/* Risk & Contact */}
@@ -835,12 +889,11 @@ export const QuoteForm: React.FC<QuoteFormProps> = ({ data: initialData }) => {
                             )}
                          </label>
                          <select 
-                            value={formData.insured_contact?.preferred_method || ''} 
-                            onChange={(e) => updateField(['insured_contact', 'preferred_method'], e.target.value || null)}
+                            value={formData.insured_contact?.preferred_method || 'Email'} 
+                            onChange={(e) => updateField(['insured_contact', 'preferred_method'], e.target.value || 'Email')}
                             className="w-full bg-k2-black text-sm rounded-md px-3 py-2.5 border border-k2-blue text-white font-light outline-none focus:ring-1 focus:ring-k2-blue focus:border-k2-blue"
                             style={{ fontWeight: 300 }}
                          >
-                            <option value="">Select...</option>
                             <option value="Email">Email</option>
                             <option value="Phone">Phone</option>
                          </select>

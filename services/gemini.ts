@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { QuoteRequestData } from "../types";
 import { summarizeEmail, shouldSummarizeEmail } from "./emailSummarizer";
+import { normalizeAggLimit, normalizeRetention } from "./fieldValidation";
 
 // Initialize Gemini API
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -225,6 +226,35 @@ export async function parseInsurancePdf(
           extractedData.parsing_notes = [];
         }
         extractedData.parsing_notes.push("Email was summarized due to length, key fields were pre-extracted");
+      }
+      
+      // Normalize agg_limit and retention values
+      if (extractedData.agg_limit !== null && extractedData.agg_limit !== undefined) {
+        if (!extractedData.parsing_notes) {
+          extractedData.parsing_notes = [];
+        }
+        const normalized = normalizeAggLimit(extractedData.agg_limit, extractedData.parsing_notes);
+        extractedData.agg_limit = normalized.value;
+      }
+      
+      if (extractedData.retention !== null && extractedData.retention !== undefined) {
+        const normalized = normalizeRetention(extractedData.retention);
+        if (normalized !== null) {
+          extractedData.retention = normalized;
+        }
+      }
+      
+      // Default preferred_method to "Email" if not set
+      if (!extractedData.insured_contact) {
+        extractedData.insured_contact = {
+          first_name: null,
+          last_name: null,
+          email: null,
+          phone: null,
+          preferred_method: 'Email'
+        };
+      } else if (!extractedData.insured_contact.preferred_method) {
+        extractedData.insured_contact.preferred_method = 'Email';
       }
       
       return extractedData;
